@@ -1,0 +1,28 @@
+﻿@model Final_Desai.Models.UserOrderViewModel
+<!-- confirmation view that shows summary of user order and cost-->
+<style>
+    *
+    {
+        color: forestgreen /* makes all text green*/
+    }
+</style>
+
+<h1>Order Confirmation </h1> 
+<br />
+Name: @Model.Order.Name
+<br />
+Patty Type: @Model.Order.PattyType
+<br />
+Patties Amount: @Model.Order.TotalPatties
+<br />
+Cheese: @Model.Order.Cheese
+<br />
+Bacon: @Model.Order.Bacon
+<br />
+Fries: @Model.Order.Fries
+<br />
+Other: @Model.Order.Other
+<br />
+Cost: @Model.Order.Cost.ToString("C") <!-- shows in currency format-->
+
+

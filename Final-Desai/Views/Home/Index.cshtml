@@ -1,0 +1,127 @@
+﻿@model Final_Desai.Models.UserOrder
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="text-primary">Hamburger Heaven Kiosk</h1>
+    <h3> All Burgers start at $5.00</h3>
+</div>
+@using (Html.BeginForm("Submit", "Home", FormMethod.Post))
+
+{
+    <table>
+        <tr>
+            <td>@Html.LabelFor(m => m.PattyType)</td>
+            <td>
+                @Html.RadioButtonFor(m => m.PattyType, "Beef")<label>Beef</label> <br />
+                @Html.RadioButtonFor(m => m.PattyType, "Veggie")<label>Veggie</label> <br />
+                @Html.RadioButtonFor(m => m.PattyType, "Beyond Burger")<label>Beyond Burger</label> 
+            </td>
+            <td class="text text-warning">@Html.ValidationMessageFor(m => m.PattyType)</td>
+        </tr>
+        <tr>
+            <td>
+                <br /> 
+                <label>Extra Patties? <br /> $0.50 each</label>
+            </td>
+            <td> @Html.TextBoxFor(m => m.TotalPatties, "test", new { @type = "range",min = "0", max = "3"}) <span id="showAdditionalPatties"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <label>Options</label>
+            </td>
+            <td>
+                <br />
+                @Html.LabelFor(m => m.Cheese)
+                @Html.CheckBoxFor(m => m.Cheese)
+                <br />
+                <label>Bacon <br />($1.00)</label>
+                @Html.CheckBoxFor(m => m.Bacon)
+                <br />
+                <label> Fries(Y/N) <br />($3.00)</label>
+                @Html.TextBoxFor(m => m.Fries)
+                <br />
+                <span class="text text-warning"> @Html.ValidationMessageFor(m => m.Fries) </span>
+            </td>
+                  <td><img id="orderPicture" src="~/img/burger.jpg" /></td> <!-- image of burger no fries-->
+
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(m => m.Other)</td>
+            <td>@Html.TextAreaFor(m => m.Other)</td>
+        </tr>
+        <tr>
+            <td>
+                <br />
+                @Html.LabelFor(m => m.Name)
+             </td>
+            <td>
+                <br />
+                @Html.TextBoxFor(m => m.Name)
+            </td>
+            <td>
+                <br /> 
+                <span class="text text-warning">   @Html.ValidationMessageFor(m => m.Name) </span>
+</td>
+        </tr>
+        <tr>
+            <td>  <span id="costDisplay"></span></td> <!-- where the cost is shown-->
+        </tr>
+    </table>
+    <input class="btn btn-success" type="submit" value="Submit" />
+}
+@section scripts
+{
+    <script type="text/javascript">
+
+        function updateCost() {
+            var cost = 5.00;
+            var extraPatties = parseInt($('#TotalPatties').val());
+            cost += (0.50 * parseInt(extraPatties));
+
+            if ($('#Bacon').prop('checked')) {
+                cost += 1;
+            }
+
+            if ($('#Fries').val().toUpperCase() == 'Y') {
+                cost += 3;
+                $('#orderPicture').attr('src', '/img/burgerFries.jpg'); 
+                $('#orderPicture').attr('height', '407'); // sets the height to be the same as the non fries image
+                $('#orderPicture').attr('width', '612');  // sets the width to be the same as the non fries image
+            }
+            else {
+                $('#orderPicture').attr('src', '/img/burger.jpg');
+            }
+
+            // shows cost as string using currency formatting.
+            cost = cost.toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                currencyDisplay: 'symbol'
+            });
+
+            $('#costDisplay').html("Cost: " + cost);
+        }
+        $(document).ready(function () {
+            $('#TotalPatties').val(0); // Extra patties slider starts at 0.
+            $('#showAdditionalPatties').html($('#TotalPatties').val()); // shows starting value of extra patties
+            updateCost();
+
+            $(document).on('input change', '#TotalPatties', function () { //whenever the slider is changed
+                updateCost();
+                $('#showAdditionalPatties').html($('#TotalPatties').val());
+            });
+
+            $(document).on('click', '#Bacon', function () { // whenever the Bacon checkbox is clicked on
+                updateCost();
+            });
+
+            $(document).on('input change', '#Fries', function () { //whenever the Fries textbox text changes
+                updateCost();
+            })
+        });
+
+
+    </script>
+}
